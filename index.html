@@ -69,7 +69,7 @@
     --logo-c:#cfa65b;
   }
   *{box-sizing:border-box;}
-  html{font-size:16px; overscroll-behavior-x:none;}
+  html{font-size:16px; overscroll-behavior:none;}
   body{
     margin:0;
     background:
@@ -82,7 +82,7 @@
     min-height:100vh;
     padding:20px 16px calc(70px + env(safe-area-inset-bottom));
     transition:background .3s ease, color .3s ease;
-    overscroll-behavior-x:none;
+    overscroll-behavior:none;
     touch-action:manipulation;
   }
   button, .btn, .scroll-btn, .small-btn, .ai-btn, select, input[type=file]+.file-label{
@@ -724,27 +724,34 @@ function closeGuideModal(){
 /* ---------- storage layer（サンドボックス対策：try/catchでフォールバック） ---------- */
 var memoryStore = {};
 var storageMode = "memory";
-(function testStorage(){
+function probeStorage(){
   try{
-    var k = "__test__";
+    if(typeof window === "undefined" || !window.localStorage) return "memory";
+    var k = "__test__" + Date.now();
     window.localStorage.setItem(k, "1");
+    var v = window.localStorage.getItem(k);
     window.localStorage.removeItem(k);
-    storageMode = "local";
+    return (v === "1") ? "local" : "memory";
   }catch(e){
-    storageMode = "memory";
+    return "memory";
   }
-})();
+}
+storageMode = probeStorage();
 
 function storageGet(key){
   try{
     if(storageMode === "local"){ return window.localStorage.getItem(key); }
-  }catch(e){}
-  return memoryStore[key] || null;
+  }catch(e){
+    storageMode = "memory"; // 途中でアクセス不能になった場合は以降メモリ運用に切り替える
+  }
+  return (memoryStore[key] !== undefined) ? memoryStore[key] : null;
 }
 function storageSet(key, value){
   try{
     if(storageMode === "local"){ window.localStorage.setItem(key, value); return; }
-  }catch(e){}
+  }catch(e){
+    storageMode = "memory";
+  }
   memoryStore[key] = value;
 }
 
@@ -8101,12 +8108,24 @@ function copyTextGeneric(text, onDone){
 
 /* ---------- exam countdown & daily quota ---------- */
 function setExamDate(){
-  var v = document.getElementById("examDateInput").value;
+  var v = "";
+  try{
+    var input = document.getElementById("examDateInput");
+    v = input ? input.value : "";
+  }catch(e){}
   if(!v) return;
-  state.examDate = v;
-  save();
-  renderCountdown();
-  showToast("試験日を設定しました");
+
+  try{ state.examDate = v; }catch(e){}
+  try{ save(); }catch(e){}
+
+  // ここから先は、上のstate更新・保存が万一失敗していてもDOM表示だけは必ず動かす
+  try{
+    renderCountdown();
+  }catch(e){}
+  try{
+    var memoNote = (storageMode === "memory") ? "（この端末では保存が制限されているため、このセッション中のみ有効です）" : "";
+    showToast("試験日を設定しました" + memoNote);
+  }catch(e){}
 }
 
 /* ---------- JST（日本標準時）を基準にした日付処理 ---------- */
@@ -8696,12 +8715,12 @@ function renderQuest(){
       (fb.correct ? '' : '<div style="font-size:13px;margin-bottom:8px;">正解：' + escapeHtml(fb.correctLabel) + '</div>') +
       (fb.explanation ? '<div style="font-size:12px;color:var(--mist);line-height:1.7;background:var(--input-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:14px;">' + escapeHtml(fb.explanation) + '</div>' : '') +
       (fb.questionId ? '<button class="btn btn-ghost" style="margin-bottom:10px;' + (isBookmarked ? 'border-color:var(--gold);color:var(--gold);' : '') + '" onclick="toggleBookmark(\'' + fb.questionId + '\')">' + (isBookmarked ? '&#11088; ブックマーク済み（解除する）' : '&#9734; 自信がない…ブックマークする') + '</button>' : '') +
-      '<div class="ai-question-row"><span class="ai-question-label">&#129497; この問題をAI家庭教師に聞く：</span>' +
+      (fb.questionId ? '<div class="ai-question-row"><span class="ai-question-label">&#129497; この問題をAI家庭教師に聞く：</span>' +
         '<div class="prompt-btn-row" style="margin-top:6px;">' +
           '<button class="ai-btn ai-chatgpt" onclick="launchQuestionAiPrompt(\'chatgpt\')">&#128994; ChatGPT</button>' +
           '<button class="ai-btn ai-gemini" onclick="launchQuestionAiPrompt(\'gemini\')">&#128309; Gemini</button>' +
           '<button class="ai-btn ai-claude" onclick="launchQuestionAiPrompt(\'claude\')">&#128992; Claude</button>' +
-        '</div></div>' +
+        '</div></div>' : '') +
       '<button class="btn btn-ghost" onclick="proceedToNextQuest()">次のクエストへ &rarr;</button>';
     return;
   }
@@ -9007,11 +9026,24 @@ function categoryBarStyle(score){
 }
 
 function renderScoreBar(label, stats, ticks, styleFn, big){
-  var st = styleFn(stats.score);
-  var pct = Math.min(100, stats.score/10);
   var ticksHtml = ticks.map(function(t){
     return '<div class="score-tick" style="left:' + (t/10) + '%;" title="' + t + '点ライン"></div>';
   }).join("");
+
+  // 1問も解いていない分野・総合は「危険」ではなく「データなし」として中立に表示する
+  if(stats.total === 0){
+    return '<div class="score-row ' + (big ? 'score-row-big' : '') + '">' +
+      '<div class="score-row-top">' +
+        '<span class="score-row-label">' + escapeHtml(label) + '</span>' +
+        '<span class="score-row-value" style="color:var(--mist);">ー<span class="score-row-zone">（まだデータがありません）</span></span>' +
+      '</div>' +
+      '<div class="score-bar-outer"><div class="score-bar-inner" style="width:0%;background:var(--line);"></div>' + ticksHtml + '</div>' +
+      '<div class="score-row-sub">正解 0/0問</div>' +
+    '</div>';
+  }
+
+  var st = styleFn(stats.score);
+  var pct = Math.min(100, stats.score/10);
   return '<div class="score-row ' + (big ? 'score-row-big' : '') + '">' +
     '<div class="score-row-top">' +
       '<span class="score-row-label">' + escapeHtml(label) + '</span>' +
@@ -9704,6 +9736,9 @@ try{
   renderPrompts();
   renderAll();
   checkDateRollover(); // 初期化時に基準日を記録
+  if(state.cbtSession && !state.cbtSession.finished){
+    showToast("&#128337; 前回の本番CBT模試（" + state.cbtSession.year + "）が進行中です。年度カードの「本番CBT模試」から再開できます。");
+  }
   window.addEventListener("resize", function(){
     drawChart(document.getElementById("chartYearSelect").value || state.activeYear);
     drawDailyChart();
