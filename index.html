@@ -69,7 +69,12 @@
     --logo-c:#cfa65b;
   }
   *{box-sizing:border-box;}
-  html{font-size:16px; overscroll-behavior:none;}
+  html{
+    font-size:16px; overscroll-behavior:none;
+    --content-font-size:15.5px; /* 問題文・選択肢・解説の可読性サイズ（文字サイズ切替で変化） */
+  }
+  html[data-fontsize="small"]{ --content-font-size:14px; }
+  html[data-fontsize="large"]{ --content-font-size:18px; }
   body{
     margin:0;
     background:
@@ -77,7 +82,7 @@
       var(--void);
     color:var(--parchment);
     font-family:"Hiragino Sans","Yu Gothic","Noto Sans JP",sans-serif;
-    font-size:15.5px;
+    font-size:var(--content-font-size);
     line-height:1.6;
     min-height:100vh;
     padding:20px 16px calc(70px + env(safe-area-inset-bottom));
@@ -191,7 +196,7 @@
   .quest-btns{display:flex;gap:10px;}
   .btn{
     flex:1; padding:14px 10px; border-radius:10px; border:none;
-    font-family:inherit; font-weight:700; font-size:15px; cursor:pointer;
+    font-family:inherit; font-weight:700; font-size:var(--content-font-size); cursor:pointer;
     transition:transform .1s ease;
   }
   .btn:active{transform:scale(.96);}
@@ -270,10 +275,10 @@
   .ai-btn.ai-chatgpt{border-color:#4fbf8b;color:#4fbf8b;}
   .ai-btn.ai-gemini{border-color:#4a90e2;color:#4a90e2;}
   .ai-btn.ai-claude{border-color:#e07b39;color:#e07b39;}
-  .ai-question-row{background:var(--input-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:12px;}
+  .ai-question-row{background:var(--input-bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:12px;font-size:var(--content-font-size);}
   .ai-question-label{font-size:11px;color:var(--mist);}
-  .q-line{margin-bottom:6px;}
-  .q-item{padding-left:16px;position:relative;margin-bottom:4px;line-height:1.6;}
+  .q-line{margin-bottom:6px;font-size:var(--content-font-size);}
+  .q-item{padding-left:16px;position:relative;margin-bottom:4px;line-height:1.6;font-size:var(--content-font-size);}
   .q-item::before{content:"";position:absolute;left:4px;top:9px;width:4px;height:4px;border-radius:50%;background:var(--gold-dim);}
 
   .add-row{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;}
@@ -345,7 +350,7 @@
     cursor:pointer; font-weight:700; margin-bottom:10px; flex-shrink:0;
   }
   .cbt-question-scroll{
-    flex:1; min-height:0; overflow-y:auto; font-size:16px; line-height:1.7;
+    flex:1; min-height:0; overflow-y:auto; font-size:var(--content-font-size); line-height:1.7;
     -webkit-overflow-scrolling:touch;
   }
   .cbt-flag-check{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mist);margin:12px 0;cursor:pointer;}
@@ -438,6 +443,11 @@
 <body>
 <div class="wrap">
   <div class="theme-switcher">
+    <select id="fontSizeSelect" onchange="setFontSize(this.value)">
+      <option value="small">文字：小</option>
+      <option value="standard" selected>文字：標準</option>
+      <option value="large">文字：大</option>
+    </select>
     <button class="header-icon-btn" onclick="openAchievementModal()">&#127942; 称号 <span id="headerAchievementCount"></span></button>
     <button class="header-icon-btn" id="soundToggleBtn" onclick="toggleSound()">&#128266;</button>
     <button class="header-icon-btn" onclick="openGuideModal()">&#10067; 使い方</button>
@@ -553,7 +563,7 @@
     <div class="share-preview" id="sharePreview"></div>
     <div class="add-row" style="margin-top:12px;">
       <button class="small-btn" style="flex:1;" onclick="copyShareText()">&#128203; コピー</button>
-      <button class="small-btn" style="flex:1;background:#000;color:#fff;border-color:#000;" onclick="shareToX()">&#120143; Xでシェア</button>
+      <button class="small-btn" style="flex:1;background:#000;color:#fff;border-color:#000;" onclick="shareToX()">Xでシェア</button>
       <button class="small-btn" style="flex:1;" onclick="copyShareTextForInstagram()">&#128248; Instagram用にコピー</button>
     </div>
   </div>
@@ -8364,9 +8374,25 @@ function startCbtExam(year){
   startCbtTimer();
 }
 
+/* ---------- CBT模試中の離脱防止ガード ---------- */
+function cbtBeforeUnloadHandler(e){
+  e.preventDefault();
+  e.returnValue = "";
+  return "";
+}
+function enableCbtExitGuard(){
+  try{ window.addEventListener("beforeunload", cbtBeforeUnloadHandler); }catch(e){}
+}
+function disableCbtExitGuard(){
+  try{ window.removeEventListener("beforeunload", cbtBeforeUnloadHandler); }catch(e){}
+}
+
 function openCbtModal(){
   document.getElementById("cbtYearLabel").textContent = state.cbtSession ? state.cbtSession.year : "";
   document.getElementById("cbtModal").classList.add("show");
+  if(state.cbtSession && !state.cbtSession.finished){
+    enableCbtExitGuard();
+  }
 }
 function closeCbtModal(){
   document.getElementById("cbtModal").classList.remove("show");
@@ -8534,6 +8560,7 @@ function finishCbtExam(reason){
   var s = state.cbtSession;
   if(!s || s.finished) return;
   stopCbtTimer();
+  disableCbtExitGuard();
   s.finished = true;
   s.finishReason = reason;
 
@@ -8618,6 +8645,7 @@ function renderCbtResults(){
 }
 
 function closeCbtExamCompletely(){
+  disableCbtExitGuard();
   closeCbtModal();
   document.getElementById("cbtExamView").style.display = "";
   document.getElementById("cbtFooterBtns").style.display = "";
@@ -8720,6 +8748,12 @@ function renderQuest(){
           '<button class="ai-btn ai-chatgpt" onclick="launchQuestionAiPrompt(\'chatgpt\')">&#128994; ChatGPT</button>' +
           '<button class="ai-btn ai-gemini" onclick="launchQuestionAiPrompt(\'gemini\')">&#128309; Gemini</button>' +
           '<button class="ai-btn ai-claude" onclick="launchQuestionAiPrompt(\'claude\')">&#128992; Claude</button>' +
+        '</div></div>' : '') +
+      (fb.questionId ? '<div class="ai-question-row"><span class="ai-question-label">&#129302; 他の選択肢（間違いの理由）をAIに質問：</span>' +
+        '<div class="prompt-btn-row" style="margin-top:6px;">' +
+          '<button class="ai-btn ai-chatgpt" onclick="launchDistractorAiPrompt(\'chatgpt\')">&#128994; ChatGPT</button>' +
+          '<button class="ai-btn ai-gemini" onclick="launchDistractorAiPrompt(\'gemini\')">&#128309; Gemini</button>' +
+          '<button class="ai-btn ai-claude" onclick="launchDistractorAiPrompt(\'claude\')">&#128992; Claude</button>' +
         '</div></div>' : '') +
       '<button class="btn btn-ghost" onclick="proceedToNextQuest()">次のクエストへ &rarr;</button>';
     return;
@@ -9449,6 +9483,37 @@ function launchQuestionAiPrompt(aiKey){
   }
 }
 
+// 不正解選択肢（ハズレ選択肢）についても深掘りするための質問文を自動生成する
+function buildDistractorAiPrompt(){
+  if(!lastAnsweredQuestion) return null;
+  var q = lastAnsweredQuestion;
+  var correctText = q.choices[q.correctIndex];
+  var choiceList = q.choices.map(function(c,i){ return (i+1) + ". " + c; }).join("\n");
+  return "ITパスポート試験の【" + (q.year || "") + " 問" + (q.no || "?") + "】について質問です。\n" +
+    "問題：" + q.text + "\n" +
+    "選択肢：\n" + choiceList + "\n" +
+    "正解：" + correctText + "\n" +
+    "私の疑問：この問題の正解以外の選択肢（ハズレ選択肢の用語）についても、なぜ間違いなのか、それぞれどのような意味の用語なのかを初学者向けにわかりやすく解説してください。";
+}
+
+function launchDistractorAiPrompt(aiKey){
+  var text = buildDistractorAiPrompt();
+  if(!text){ showToast("まだ解答した問題がありません"); return; }
+  function afterCopy(){
+    try{ window.open(AI_URLS[aiKey], "_blank"); }catch(e){}
+    showToast("ハズレ選択肢についての質問文をコピーしました。貼り付けてご利用ください。");
+  }
+  try{
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(afterCopy)['catch'](function(){ fallbackCopy(text, afterCopy); });
+    }else{
+      fallbackCopy(text, afterCopy);
+    }
+  }catch(e){
+    fallbackCopy(text, afterCopy);
+  }
+}
+
 function launchAiPrompt(gi, ii, aiKey){
   var text = buildDynamicPrompt(PROMPTS[gi].items[ii]);
   function afterCopy(){
@@ -9712,6 +9777,28 @@ function loadTheme(){
   setTheme(theme);
 }
 
+/* ---------- 文字サイズ切り替え ---------- */
+var FONT_SIZE_KEY = "itpass_quest_fontsize";
+
+function setFontSize(size){
+  var valid = (size === "small" || size === "large") ? size : "standard";
+  try{
+    document.documentElement.setAttribute("data-fontsize", valid === "standard" ? "" : valid);
+  }catch(e){}
+  try{ storageSet(FONT_SIZE_KEY, valid); }catch(e){}
+  try{
+    var sel = document.getElementById("fontSizeSelect");
+    if(sel) sel.value = valid;
+  }catch(e){}
+}
+
+function loadFontSizePref(){
+  var saved = null;
+  try{ saved = storageGet(FONT_SIZE_KEY); }catch(e){}
+  var size = (saved === "small" || saved === "large") ? saved : "standard";
+  setFontSize(size);
+}
+
 /* ---------- JST日付切り替わりの自動検知（リロード不要） ---------- */
 var lastKnownJSTDate = null;
 function checkDateRollover(){
@@ -9732,6 +9819,7 @@ try{
   loadTheme();
   loadSoundPref();
   loadTimeAttackPref();
+  loadFontSizePref();
   showStorageWarnIfNeeded();
   renderPrompts();
   renderAll();
