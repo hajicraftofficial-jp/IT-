@@ -287,6 +287,36 @@
     background:var(--input-bg); color:var(--parchment); font-family:inherit; font-size:13px;
     min-width:120px;
   }
+
+  /* 試験日カウントダウンの日付入力：アイコン視認性＋全面クリックでピッカーが開くようにする */
+  .exam-date-wrap{ position:relative; flex:1; min-width:150px; }
+  input[type=date]#examDateInput{
+    width:100%; padding-right:36px; cursor:pointer;
+    color-scheme: dark; /* CBT/セピア（明るいテーマ）では下記で light に上書き */
+  }
+  html[data-theme="cbt"] input[type=date]#examDateInput,
+  html[data-theme="sepia"] input[type=date]#examDateInput{
+    color-scheme: light;
+  }
+  /* 純正のカレンダーアイコン部分を透明化した上で入力欄全体に拡張し、
+     「右端をピンポイント」ではなく枠内どこをクリックしてもピッカーが開くようにする */
+  input[type=date]#examDateInput::-webkit-calendar-picker-indicator{
+    position:absolute; top:0; left:0; right:0; bottom:0;
+    width:100%; height:100%; margin:0; padding:0;
+    opacity:0; cursor:pointer;
+  }
+  /* 上のインジケータを透明化した代わりに、テーマ色（ゴールド）で発光する自前アイコンを重ねて表示する */
+  .exam-date-wrap::after{
+    content:"";
+    position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    width:16px; height:16px;
+    background-color:var(--gold);
+    -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 6H5v12h14V8z"/></svg>');
+    mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 2v2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2V2h-2v2H9V2H7zm12 6H5v12h14V8z"/></svg>');
+    -webkit-mask-size:contain; mask-size:contain; -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat;
+    pointer-events:none;
+    filter: drop-shadow(0 0 4px rgba(232,184,75,.75));
+  }
   textarea{width:100%;min-height:100px;resize:vertical;font-family:monospace;font-size:11px;}
   select{padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--input-bg);color:var(--parchment);font-family:inherit;font-size:13px;}
   .small-btn{padding:10px 14px;border-radius:8px;background:var(--panel-2);border:1px solid var(--line);color:var(--parchment);cursor:pointer;font-size:13px;}
@@ -309,6 +339,21 @@
     padding:10px 14px; font-size:11px; color:var(--parchment); margin-bottom:16px; line-height:1.7; display:none;
   }
   .storage-warn.show{display:block;}
+
+  .backup-reminder{
+    background:rgba(232,184,75,.12); border:1px solid var(--gold); border-radius:10px;
+    padding:12px 14px; margin-bottom:16px;
+  }
+  .backup-reminder-text{font-size:12px; color:var(--gold); font-weight:700; line-height:1.6; margin-bottom:10px;}
+  .backup-reminder-btns{display:flex; gap:8px;}
+  .backup-reminder-btns .btn{flex:1;font-size:12px;padding:9px 6px;}
+  .backup-reminder-btns .small-btn{flex:1;text-align:center;}
+
+  .backup-note{
+    background:rgba(226,89,63,.1); border:1px solid var(--ember); border-radius:8px;
+    padding:10px 12px; margin-top:10px; font-size:11px; color:var(--parchment); line-height:1.7;
+  }
+  .backup-note b{color:var(--ember);}
 
   .btn-danger{
     width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--ember);
@@ -462,6 +507,14 @@
 
   <div class="storage-warn" id="storageWarn"></div>
 
+  <div class="backup-reminder" id="backupReminderBanner" style="display:none;">
+    <div class="backup-reminder-text" id="backupReminderText">&#128190; 進捗をバックアップ（エクスポート）しておきませんか？</div>
+    <div class="backup-reminder-btns">
+      <button class="small-btn" onclick="exportProgressFromReminder()">今すぐエクスポート</button>
+      <button class="btn btn-ghost" onclick="dismissBackupReminder()">閉じる</button>
+    </div>
+  </div>
+
   <div class="card">
     <div class="level-row">
       <span class="level-label" id="levelLabel">Lv.1</span>
@@ -483,7 +536,7 @@
   <div class="card">
     <div class="quest-eyebrow">&#127919; 試験日カウントダウン</div>
     <div class="add-row" style="margin-top:0;margin-bottom:12px;">
-      <input type="date" id="examDateInput">
+      <div class="exam-date-wrap"><input type="date" id="examDateInput"></div>
       <button class="small-btn" onclick="setExamDate()">設定</button>
     </div>
     <div id="countdownBody"></div>
@@ -534,13 +587,17 @@
   <div class="section-label">&#128190; データのバックアップ</div>
   <div class="card">
     <div class="no-quest" style="margin-bottom:10px;">
-      進捗はこの端末のブラウザにのみ保存されます。機種変更やブラウザのデータ消去に備えて、定期的にバックアップをおすすめします。
+      進捗（レベル・周回記録・ミス問題・ブックマーク・称号など）は<b>この端末のブラウザにのみ</b>保存されます。他の端末とは同期されず、機種変更やアプリの再インストールでは引き継がれません。
     </div>
     <div class="add-row">
       <button class="small-btn" style="flex:1;" onclick="exportProgress()">&#11015;&#65039; 進捗をエクスポート</button>
       <label class="file-label" style="flex:1;text-align:center;">&#11014;&#65039; 進捗を復元
         <input type="file" id="importProgressInput" accept=".json,application/json" onchange="handleProgressImport(event)">
       </label>
+    </div>
+    <div class="backup-note">
+      &#9888;&#65039; <b>Safari等で「履歴とWebサイトデータを消去」を行うと、この進捗も一緒に消えてしまいます。</b><br>
+      週1回程度を目安に「進捗をエクスポート」でファイル保存しておくことを強くおすすめします。機種変更時も、このファイルがあれば「進捗を復元」でそのまま引き継げます。
     </div>
   </div>
 
@@ -7849,6 +7906,7 @@ function subjectCategory(subjectId){
 
 /* ---------- xp / level ---------- */
 var MAX_LEVEL = 50;
+var lastKnownLevel = null; // レベルアップ検知（バックアップリマインド用）
 // レベル成長カーブは「全クエスト周回数」（読込済み問題数×5周）に連動させる。
 // 年度データが増えるほど目標XPも自動的に伸び、Lv.50到達のタイミングが常に「全クエスト完走」と整合する。
 function maxLevelTargetXp(){
@@ -7891,6 +7949,12 @@ function renderLevel(){
   document.getElementById("xpLabel").textContent = state.xp+" XP";
   renderEstimatedScore();
   renderStreak();
+
+  // レベルアップを検知したらバックアップを促す（初回描画時は発火させない）
+  if(lastKnownLevel !== null && lv > lastKnownLevel){
+    showBackupReminder("&#11088; Lv." + lv + " に到達しました！せっかくの成長記録、進捗をバックアップ（エクスポート）しておきませんか？");
+  }
+  lastKnownLevel = lv;
 }
 
 /* ---------- 推定スコア（直近の実力を1000点満点換算） ---------- */
@@ -9033,6 +9097,7 @@ function completeCycle(y){
   renderAll();
   playFanfareSound();
   showToast(cycleNum + "周目 完了！ 正答率" + accuracy + "% ／ +1,200 XPボーナス");
+  showBackupReminder("&#127942; " + y + "の" + cycleNum + "周目を完走しました！進捗をバックアップ（エクスポート）しておきませんか？");
 }
 
 /* ---------- subject map ---------- */
@@ -9609,6 +9674,23 @@ function performReset(){
 }
 
 /* ---------- データのバックアップ（エクスポート／復元） ---------- */
+/* ---------- バックアップ・リマインド ---------- */
+function showBackupReminder(message){
+  var textEl = document.getElementById("backupReminderText");
+  var bannerEl = document.getElementById("backupReminderBanner");
+  if(!textEl || !bannerEl) return;
+  textEl.innerHTML = message;
+  bannerEl.style.display = "";
+}
+function dismissBackupReminder(){
+  var el = document.getElementById("backupReminderBanner");
+  if(el) el.style.display = "none";
+}
+function exportProgressFromReminder(){
+  exportProgress();
+  dismissBackupReminder();
+}
+
 function exportProgress(){
   try{
     var payload = JSON.stringify({
@@ -9820,6 +9902,14 @@ try{
   loadSoundPref();
   loadTimeAttackPref();
   loadFontSizePref();
+  try{
+    var examDateEl = document.getElementById("examDateInput");
+    if(examDateEl){
+      examDateEl.addEventListener("click", function(){
+        try{ if(this.showPicker) this.showPicker(); }catch(e){}
+      });
+    }
+  }catch(e){}
   showStorageWarnIfNeeded();
   renderPrompts();
   renderAll();
