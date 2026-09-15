@@ -382,7 +382,6 @@
     </select>
   </div>
 
-  <!-- 方法2：サブタイトル風の2行構成タイトル -->
   <h1 class="title">
     <span class="title-subtag">【無料体験版】</span>
     🗡️ ITパスポート合格クエスト
@@ -590,22 +589,52 @@ function handleBoothClick(){
   window.open(BOOTH_URL, '_blank');
 }
 
-/* ---------- サウンドシステム ---------- */
+/* ---------- サウンドシステム（画面復帰時の自動再開対応） ---------- */
 var soundEnabled = true;
 var audioCtx = null;
+
 function getAudioContext(){
   if(!audioCtx){
     var AC = window.AudioContext || window.webkitAudioContext;
     if(AC) audioCtx = new AC();
   }
-  if(audioCtx && audioCtx.state === "suspended") audioCtx.resume();
+  if(audioCtx && audioCtx.state === "suspended"){
+    audioCtx.resume();
+  }
   return audioCtx;
 }
+
+// 他のアプリ・ゲームからブラウザ画面に戻ってきた瞬間に音声を叩き起こす
+document.addEventListener("visibilitychange", function() {
+  if (!document.hidden && audioCtx && audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+});
+
+// 画面タップ時にも念のためスリープ解除
+window.addEventListener("touchstart", function() {
+  if (audioCtx && audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+}, { passive: true });
+
 function playTone(freq, type, duration, delay){
   if(!soundEnabled) return;
   try{
     var ctx = getAudioContext();
     if(!ctx) return;
+    if(ctx.state === "suspended"){
+      ctx.resume().then(function(){
+        emitSound(ctx, freq, type, duration, delay);
+      });
+    } else {
+      emitSound(ctx, freq, type, duration, delay);
+    }
+  }catch(e){}
+}
+
+function emitSound(ctx, freq, type, duration, delay){
+  try{
     var osc = ctx.createOscillator();
     var gain = ctx.createGain();
     osc.type = type || "sine";
@@ -617,6 +646,7 @@ function playTone(freq, type, duration, delay){
     osc.stop(ctx.currentTime + (delay || 0) + duration);
   }catch(e){}
 }
+
 function playCorrectSound(){ playTone(587.33,"triangle",0.12,0); playTone(880,"triangle",0.22,0.1); }
 function playWrongSound(){ playTone(260,"sawtooth",0.15,0); playTone(220,"sawtooth",0.25,0.12); }
 function playFanfareSound(){
@@ -749,7 +779,7 @@ var DEFAULT_QUESTIONS = [
   {"year":"令和8年度","no":21,"subject":"ストラテジ系","text":"サイバーセキュリティ基本法の立法趣旨を説明したものはどれか。","choices":["コンピュータへの不正アクセス行為を定義し、その行為を禁止するとともに罰則を定め、ネットワーク通信秩序の維持を図ること","情報セキュリティに関する適切なコントロールを整備、運用するための実践的な規範を定め、企業などで効果的な情報セキュリティ対策の推進を促すこと","情報通信ネットワークを通じたコンピュータへの不正侵入などの行為に対する防御施策に関し、基本理念を定め、国及び地方公共団体の責務などを明らかにして、施策の総合的かつ効果的な推進を図ること","デジタルコンテンツの複製防止のための技術的制限手段を無効化する行為などを規制することによって、企業などの営業上の利益を確保すること"],"correctIndex":2,"explanation":"サイバーセキュリティ基本法は基本理念や国等の責務を定める法律。"},
   {"year":"令和8年度","no":22,"subject":"ストラテジ系","text":"伝票入力処理などの定型的な事務作業を、ソフトウェアロボットに代替させることによって、自動化や効率化を図る手段として、最も適切なものはどれか。","choices":["BPO","EUC","FA","RPA"],"correctIndex":3,"explanation":"ソフトウェアロボットによる定型業務の自動化はRPA。"},
   {"year":"令和8年度","no":23,"subject":"ストラテジ系","text":"インターネット広告の手法の一つである、リスティング広告に関する記述として、最も適切なものはどれか。","choices":["Webサイトの閲覧履歴やオンラインショッピングの購買履歴などの利用者の行動履歴を基にして、広告を表示する。","検索エンジンの利用者が検索ボックスに入力したキーワードに連動して、広告を表示する。","事前に広告メールの受信を許諾した利用者に対して、広告メールを配信する。","定期的に発行するメールマガジンに、広告を掲載して配信する。"],"correctIndex":1,"explanation":"検索キーワードに連動して表示される広告。"},
-  {"year":"令和8年度","no":24,"subject":"ストラテジ系","text":"コーポレートガバナンスの説明として、適切なものはどれか。","choices":["株主を始めとした利害関係者による経営者への監視や監督を中心とした、企業活動を律する枠組みのこと","企業が活動を行う上で必要な資本の調達のこと","企業の理念や特性を、統一されたイメージやデザインなどで発信し、企業のブランド価値の向上を図ること","競合他社では提供が不可能な価値をもたらす、企業が有する独自のスキルや技術のこと"],"correctIndex":0,"explanation":"株主等による経営者への監視・監督を中心とした企業統治の枠組み。"},
+  {"year":"令和8年度","no":24,"subject":"ストラテジ系","text":"コーポレートガバナンスの説明として、適切なものはどれか。","choices":["株主を始めとした利害関係者による経営者への監視や監督を中心とした、企業活動を律する枠組みのこと","企業が活動を行う上で必要な資本の調達のこと","企業の理念や特性を、統一されたイメージやデザインなどで発信し、企業のブランド価値の向上を図ること","競合他社では提供が不可能な価値をもたらす、企業が有する独自のスキルや技術のこと"],"correctIndex":2,"explanation":"株主等による経営者への監視・監督を中心とした企業統治の枠組み。"},
   {"year":"令和8年度","no":25,"subject":"ストラテジ系","text":"大容量、頻繁な更新、多種多様という三つの要素をもつ情報資産を\"ビッグデータ\"と定義する考え方がある。このビッグデータを特徴づける三つの要素を総称して何というか。","choices":["3C","3D","3G","3V"],"correctIndex":3,"explanation":"Volume（量）、Velocity（速度）、Variety（多様性）の3V。"},
   {"year":"令和8年度","no":26,"subject":"ストラテジ系","text":"表はA社の貸借対照表である。A社の自己資本比率は何％か。\n（流動資産730、固定資産270／流動負債200、固定負債500、資本金300。単位：百万円）","choices":["30","54","70","90"],"correctIndex":0,"explanation":"自己資本比率＝300／1000＝30%。"},
   {"year":"令和8年度","no":27,"subject":"ストラテジ系","text":"AIを、様々な課題に対して判断できる\"強いAI\"と、特定の課題だけを判断できる\"弱いAI\"に分類した場合、\"弱いAI\"の記述として、最も適切なものはどれか。","choices":["人間と同等の知能がコンピュータ上で再現され、人間のように判断することができるが、人間と同じような判断ミスをすることもある。","人間のように質問そのものの意味を理解したり、考えたりしているわけではないが、判断の結果を示すことはできる。","人間よりも賢く、人間の手助けがなくても自らの判断力を高めることができる。","自らがもつ知識や能力を自律的に適用することによって、柔軟に判断できる能力がある。"],"correctIndex":1,"explanation":"弱いAIは意味を理解せず特定タスクの判断結果のみを出す。"},
