@@ -111,23 +111,20 @@
     body{padding:14px 12px calc(60px + env(safe-area-inset-bottom));}
     .card{padding:14px 14px;}
     .title{font-size:19px;}
+    .title-subtag{font-size:13px;}
     .subtitle{font-size:11px;margin-bottom:16px;}
     .quest-subject{font-size:18px;}
     .btn{padding:11px 10px;font-size:14px;}
-    .quest-btns{gap:8px;}
-    #questCard div[style*="line-height:1.8"]{margin-bottom:10px !important;}
     .theme-switcher{gap:6px;}
     .theme-switcher select, .header-icon-btn{font-size:10px;padding:6px 8px;}
-    .cat-progress{gap:6px;}
-    .cat-pill{min-width:76px;font-size:9px;padding:6px 8px;}
-    .score-streak-row{gap:6px;}
   }
   @media (max-width: 400px){
     .theme-switcher{flex-wrap:wrap;justify-content:flex-end;row-gap:6px;}
     .cbt-footer-btns .btn{font-size:11px;padding:11px 3px;}
   }
 
-  .title{text-align:center;font-size:22px;font-weight:800;color:var(--gold);margin:0 0 4px;}
+  .title{text-align:center;font-size:22px;font-weight:800;color:var(--gold);margin:0 0 4px;line-height:1.35;}
+  .title-subtag{display:block;font-size:14px;color:var(--mist);font-weight:700;letter-spacing:.06em;margin-bottom:4px;}
   .subtitle{text-align:center;color:var(--mist);font-size:12px;margin:0 0 24px;letter-spacing:.08em;}
 
   .card{
@@ -147,26 +144,10 @@
 
   .level-row{display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;}
   .level-label{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-weight:800;font-size:19px;color:var(--gold);}
-  .level-label.level-max{
-    color:var(--gold); text-shadow:0 0 10px rgba(232,184,75,.9), 0 0 20px rgba(232,184,75,.5);
-    animation:levelMaxGlow 1.8s ease-in-out infinite alternate;
-  }
-  @keyframes levelMaxGlow{
-    from{ text-shadow:0 0 6px rgba(232,184,75,.6); }
-    to{ text-shadow:0 0 16px rgba(232,184,75,1), 0 0 26px rgba(232,184,75,.6); }
-  }
-  .xpbar-inner.bar-max{background:linear-gradient(90deg,var(--gold),#fff5da,var(--gold)); background-size:200% 100%; animation:barMaxShimmer 2s linear infinite;}
-  @keyframes barMaxShimmer{ from{background-position:0% 0;} to{background-position:200% 0;} }
   .level-sub{font-size:11px;color:var(--mist);}
   .xpbar-outer{height:10px;border-radius:6px;background:var(--input-bg);border:1px solid var(--line);overflow:hidden;}
   .xpbar-inner{height:100%;background:linear-gradient(90deg,#c98f2b,var(--gold));transition:width .5s ease;}
   .xp-num{font-size:11px;color:var(--mist);margin-top:6px;text-align:right;}
-  .score-streak-row{display:flex;gap:10px;margin-top:12px;}
-  .mini-stat{
-    flex:1; background:var(--input-bg); border:1px solid var(--line); border-radius:8px;
-    padding:8px 10px; font-size:10px; color:var(--mist); text-align:center;
-  }
-  .mini-stat b{display:block;font-size:15px;margin-top:2px;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;}
 
   .achievement-grid{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(84px, 1fr)); gap:10px;
@@ -183,16 +164,6 @@
   .badge.unlocked .badge-icon{filter:none; opacity:1; text-shadow:0 0 8px rgba(232,184,75,.6);}
   .badge.unlocked .badge-name{color:var(--gold); font-weight:700;}
 
-  .share-preview{
-    background:var(--input-bg); border:1px solid var(--line); border-radius:10px;
-    padding:12px 14px; font-size:12px; color:var(--parchment); line-height:1.7; white-space:pre-wrap;
-  }
-
-  .timer-bar-outer{height:8px;border-radius:5px;background:var(--input-bg);border:1px solid var(--line);overflow:hidden;}
-  .timer-bar-inner{height:100%;background:linear-gradient(90deg,var(--emerald),var(--gold));transition:width 1s linear, background .3s ease;}
-  .timer-bar-inner.warn{background:linear-gradient(90deg,var(--gold),var(--ember));}
-  .timer-bar-inner.danger{background:var(--ember);}
-
   .quest-eyebrow{font-size:11px;letter-spacing:.15em;color:var(--ember);font-weight:700;margin-bottom:6px;}
   .quest-cat-badge{
     display:inline-block; font-size:10px; padding:3px 9px; border-radius:12px;
@@ -200,7 +171,6 @@
     margin-bottom:8px; font-weight:700;
   }
   .quest-subject{font-size:20px;font-weight:800;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;margin-bottom:4px;}
-  .quest-meta{font-size:12px;color:var(--mist);margin-bottom:14px;}
   .quest-btns{display:flex;gap:10px;}
   .btn{
     flex:1; padding:14px 10px; border-radius:10px; border:none;
@@ -213,13 +183,6 @@
   .btn-ghost{background:transparent;border:1px solid var(--line);color:var(--parchment);}
   .no-quest{color:var(--mist);font-size:13px;line-height:1.7;}
 
-  .cat-progress{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
-  .cat-pill{
-    flex:1; min-width:90px; background:var(--input-bg); border:1px solid var(--line); border-radius:8px;
-    padding:8px 10px; font-size:10px; color:var(--mist); text-align:center;
-  }
-  .cat-pill b{display:block;font-size:13px;color:var(--parchment);margin-top:2px;}
-
   .section-label{
     font-size:13px; font-weight:700; color:var(--gold);
     display:flex; align-items:center; gap:8px; margin:26px 0 10px;
@@ -231,44 +194,7 @@
     padding:12px 14px; margin-bottom:8px; flex-wrap:wrap; gap:8px;
   }
   .scroll-year{font-size:13px; font-weight:700;}
-  .scroll-badge{font-size:10px;color:var(--mist);margin-top:2px;}
-  .seals{display:flex;gap:5px;}
-  .seal{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--gold-dim);display:flex;align-items:center;justify-content:center;font-size:10px;}
-  .seal.lit{background:var(--gold);border-color:var(--gold);box-shadow:0 0 8px rgba(232,184,75,.7);}
   .scroll-btn{font-size:11px; padding:6px 10px; border-radius:8px; background:var(--panel-2); border:1px solid var(--line); color:var(--parchment); cursor:pointer;}
-
-  .subj-row{padding:10px 0;border-bottom:1px solid var(--line);}
-  .subj-row:last-child{border-bottom:none;}
-  .subj-top{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;gap:8px;flex-wrap:wrap;}
-  .subj-name{font-weight:700;}
-  .subj-cat{font-size:10px;color:var(--mist);background:var(--input-bg);border:1px solid var(--line);border-radius:8px;padding:2px 8px;}
-  .subj-pct{color:var(--mist);}
-  .bar-outer{height:6px;background:var(--input-bg);border-radius:4px;overflow:hidden;}
-  .bar-inner{height:100%;background:linear-gradient(90deg,#3d8f6b,var(--emerald));}
-
-  .score-row{padding:12px 0;border-bottom:1px solid var(--line);}
-  .score-row:last-child{border-bottom:none;}
-  .score-row-big{padding-bottom:16px;margin-bottom:4px;border-bottom:1.5px solid var(--gold-dim);}
-  .score-row-top{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px;margin-bottom:6px;}
-  .score-row-label{font-size:13px;font-weight:700;color:var(--parchment);}
-  .score-row-big .score-row-label{font-size:15px;font-family:"Hiragino Mincho ProN","Yu Mincho",serif;}
-  .score-row-value{font-size:14px;font-weight:800;}
-  .score-row-big .score-row-value{font-size:19px;}
-  .score-row-zone{font-size:10px;font-weight:400;color:var(--mist);margin-left:2px;}
-  .score-bar-outer{position:relative;height:10px;border-radius:6px;background:var(--input-bg);border:1px solid var(--line);overflow:visible;}
-  .score-row-big .score-bar-outer{height:14px;}
-  .score-bar-inner{height:100%;border-radius:6px;transition:width .4s ease;}
-  .score-tick{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--parchment);opacity:.55;}
-  .score-row-sub{font-size:10px;color:var(--mist);margin-top:4px;text-align:right;}
-
-  canvas{width:100%;height:140px;display:block;}
-  .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:8px;font-size:10px;color:var(--mist);}
-  .chart-legend span{display:inline-flex;align-items:center;gap:5px;}
-  .chart-legend i{width:10px;height:10px;border-radius:2px;display:inline-block;}
-
-  .mistake-item{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px dashed var(--line);font-size:13px;flex-wrap:wrap;gap:6px;}
-  .mistake-item:last-child{border-bottom:none;}
-  .tag-ember{color:var(--ember);font-size:11px;}
 
   .prompt-cat{font-size:12px;color:var(--gold);font-weight:700;margin:14px 0 6px;}
   .prompt-item{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;margin-bottom:8px;}
@@ -291,13 +217,41 @@
     min-width:0;
   }
 
-  /* 試験日カウントダウンの日付入力 */
-  .exam-date-wrap{ position:relative; flex:1 1 auto; min-width:0; }
-  .exam-date-submit{ flex:0 0 auto; white-space:nowrap; padding:10px 14px; font-weight:700; }
+  /* 試験日カウントダウンの日付入力（クロスブラウザ完全固定） */
+  .exam-date-wrap{
+    position:relative;
+    flex:1 1 0%;
+    min-width:0;
+    max-width:calc(100% - 74px);
+    overflow:hidden;
+  }
+  .exam-date-submit{
+    flex:0 0 66px !important;
+    width:66px !important;
+    min-width:66px !important;
+    white-space:nowrap;
+    padding:10px 0 !important;
+    text-align:center;
+    font-weight:700;
+  }
   input[type=date]#examDateInput{
-    width:100%; min-width:0; display:block; padding:10px 32px 10px 10px; border-radius:8px; border:1px solid var(--line);
-    background:var(--input-bg); color:var(--parchment); font-family:inherit; font-size:13px; cursor:pointer;
+    width:100% !important;
+    min-width:0 !important;
+    max-width:100% !important;
+    display:block;
+    padding:10px 32px 10px 8px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--input-bg);
+    color:var(--parchment);
+    font-family:inherit;
+    font-size:13px;
+    cursor:pointer;
     color-scheme: dark;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    box-sizing: border-box;
   }
   html[data-theme="cbt"] input[type=date]#examDateInput,
   html[data-theme="sepia"] input[type=date]#examDateInput{
@@ -319,43 +273,18 @@
     pointer-events:none;
     filter: drop-shadow(0 0 4px rgba(232,184,75,.75));
   }
-  textarea{width:100%;min-height:100px;resize:vertical;font-family:monospace;font-size:11px;}
+
   select{padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--input-bg);color:var(--parchment);font-family:inherit;font-size:13px;}
   .small-btn{padding:10px 14px;border-radius:8px;background:var(--panel-2);border:1px solid var(--line);color:var(--parchment);cursor:pointer;font-size:13px;}
-  .file-label{
-    display:inline-block; padding:10px 14px; border-radius:8px; background:var(--gold); color:var(--on-gold);
-    font-weight:700; font-size:13px; cursor:pointer; text-align:center;
-  }
-  .file-label input{display:none;}
   .toast{
     position:fixed; bottom:24px; left:50%; transform:translateX(-50%);
     background:var(--gold); color:var(--on-gold); padding:10px 18px; border-radius:20px;
     font-weight:700; font-size:13px; box-shadow:0 8px 20px var(--shadow);
     opacity:0; pointer-events:none; transition:opacity .3s ease, transform .3s ease;
-    max-width:88%; text-align:center;
+    max-width:88%; text-align:center; z-index:999;
   }
   .toast.show{opacity:1; transform:translateX(-50%) translateY(-6px);}
   .footnote{text-align:center;color:var(--mist);font-size:10px;margin-top:30px;line-height:1.8;}
-  .storage-warn{
-    background:rgba(226,89,63,.15); border:1px solid var(--ember); border-radius:10px;
-    padding:10px 14px; font-size:11px; color:var(--parchment); margin-bottom:16px; line-height:1.7; display:none;
-  }
-  .storage-warn.show{display:block;}
-
-  .backup-reminder{
-    background:rgba(232,184,75,.12); border:1px solid var(--gold); border-radius:10px;
-    padding:12px 14px; margin-bottom:16px;
-  }
-  .backup-reminder-text{font-size:12px; color:var(--gold); font-weight:700; line-height:1.6; margin-bottom:10px;}
-  .backup-reminder-btns{display:flex; gap:8px;}
-  .backup-reminder-btns .btn{flex:1;font-size:12px;padding:9px 6px;}
-  .backup-reminder-btns .small-btn{flex:1;text-align:center;}
-
-  .backup-note{
-    background:rgba(226,89,63,.1); border:1px solid var(--ember); border-radius:8px;
-    padding:10px 12px; margin-top:10px; font-size:11px; color:var(--parchment); line-height:1.7;
-  }
-  .backup-note b{color:var(--ember);}
 
   .btn-danger{
     width:100%; padding:10px 14px; border-radius:8px; border:1px solid var(--ember);
@@ -368,7 +297,6 @@
     align-items:center; justify-content:center; z-index:100; padding:20px;
   }
   .modal-overlay.show{display:flex;}
-  #cbtNavDrawer{z-index:200;background:rgba(10,8,22,.7);}
   .modal-box{
     background:var(--panel-2); border:1px solid var(--ember); border-radius:14px;
     padding:22px; max-width:400px; width:100%; box-shadow:0 12px 32px var(--shadow);
@@ -388,47 +316,20 @@
   }
   .cbt-header-title{font-family:"Hiragino Mincho ProN","Yu Mincho",serif;font-weight:800;color:var(--gold);font-size:14px;}
   .cbt-timer{font-size:20px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;}
-  .cbt-timer.cbt-timer-danger{color:var(--ember);animation:levelMaxGlow 1s ease-in-out infinite alternate;}
 
   .cbt-exam-view{flex:1; min-height:0; display:flex; flex-direction:column;}
-  .cbt-nav-toggle{
-    align-self:flex-start; font-size:12px; padding:8px 12px; border-radius:8px;
-    background:var(--panel-2); border:1px solid var(--gold-dim); color:var(--gold);
-    cursor:pointer; font-weight:700; margin-bottom:10px; flex-shrink:0;
-  }
   .cbt-question-scroll{
     flex:1; min-height:0; overflow-y:auto; font-size:var(--content-font-size); line-height:1.7;
-    -webkit-overflow-scrolling:touch;
+    -webkit-overflow-scrolling:touch; padding-right:4px;
   }
-  .cbt-flag-check{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--mist);margin:12px 0;cursor:pointer;}
-  .cbt-flag-check input{accent-color:var(--ember);width:16px;height:16px;}
-  .cbt-choice-selected{border-color:var(--gold) !important;background:rgba(232,184,75,.12);color:var(--gold);}
+  .cbt-choice-selected{border-color:var(--gold) !important;background:rgba(232,184,75,.16) !important;color:var(--gold) !important;font-weight:700;}
 
   .cbt-footer-btns{display:flex;gap:8px;flex-wrap:nowrap;flex-shrink:0;padding-top:10px;margin-top:8px;border-top:1px solid var(--line);}
   .cbt-footer-btns .btn{flex:1;min-width:0;font-size:12px;padding:12px 4px;}
 
-  .cbt-nav-drawer-box{max-width:420px;max-height:80vh;display:flex;flex-direction:column;border-color:var(--gold);}
-  .cbt-nav-legend{display:flex;gap:12px;flex-wrap:wrap;font-size:10px;color:var(--mist);margin-bottom:10px;}
-  .cbt-nav-legend span{display:inline-flex;align-items:center;gap:4px;}
-  .cbt-legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block;background:var(--input-bg);border:1px solid var(--line);}
-  .cbt-legend-dot.answered{background:#4a5fb8;border-color:#4a5fb8;}
-  .cbt-legend-dot.flagged{background:var(--ember);border-color:var(--ember);}
-  .cbt-nav-grid-wrap{overflow-y:auto;flex:1;}
-  .cbt-nav-grid{display:grid;grid-template-columns:repeat(6, 1fr);gap:6px;}
-  .cbt-nav-cell{
-    aspect-ratio:1; min-height:38px; border-radius:6px; border:1px solid var(--line);
-    background:var(--input-bg);color:var(--mist);font-size:12px;cursor:pointer;touch-action:manipulation;
-  }
-  .cbt-nav-cell.answered{background:#4a5fb8;border-color:#4a5fb8;color:#fff;}
-  .cbt-nav-cell.flagged{background:var(--ember);border-color:var(--ember);color:#fff;}
-  .cbt-nav-cell.current{outline:2px solid var(--gold);outline-offset:1px;}
-
   .cbt-results-view{flex:1;min-height:0;display:flex;flex-direction:column;}
   .cbt-score-summary{text-align:center;padding:14px 0;border-bottom:1px solid var(--line);margin-bottom:10px;flex-shrink:0;}
-  .cbt-result-list{flex:1;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;}
-  .cbt-result-item{padding:10px 0;border-bottom:1px dashed var(--line);}
-  .cbt-result-head{display:flex;justify-content:space-between;font-size:12px;font-weight:700;}
-  .cbt-launch-btn{border-color:var(--gold) !important;color:var(--gold) !important;}
+
   .modal-btns{display:flex;gap:10px;}
   .btn-danger-solid{
     flex:1; padding:12px 10px; border-radius:10px; border:none; font-family:inherit; font-weight:700; font-size:14px;
@@ -471,7 +372,7 @@
       <option value="standard" selected>文字：標準</option>
       <option value="large">文字：大</option>
     </select>
-    <button class="header-icon-btn" onclick="openAchievementModal()">🏆 称号 <span id="headerAchievementCount"></span></button>
+    <button class="header-icon-btn" onclick="openAchievementModal()">🏆 称号</button>
     <button class="header-icon-btn" id="soundToggleBtn" onclick="toggleSound()">🔊</button>
     <button class="header-icon-btn" onclick="openGuideModal()">❓ 使い方</button>
     <select id="themeSelect" onchange="setTheme(this.value)">
@@ -480,18 +381,13 @@
       <option value="sepia">アイケアセピア</option>
     </select>
   </div>
-  <h1 class="title">🗡️ 【無料体験版】ITパスポート合格クエスト</h1>
+
+  <!-- 方法2：サブタイトル風の2行構成タイトル -->
+  <h1 class="title">
+    <span class="title-subtag">【無料体験版】</span>
+    🗡️ ITパスポート合格クエスト
+  </h1>
   <p class="subtitle">令和8年度・厳選100問お試し ＆ 7日間集中トライアル</p>
-
-  <div class="storage-warn" id="storageWarn"></div>
-
-  <div class="backup-reminder" id="backupReminderBanner" style="display:none;">
-    <div class="backup-reminder-text" id="backupReminderText">💾 進捗をバックアップ（エクスポート）しておきませんか？</div>
-    <div class="backup-reminder-btns">
-      <button class="small-btn" onclick="exportProgressFromReminder()">今すぐエクスポート</button>
-      <button class="btn btn-ghost" onclick="dismissBackupReminder()">閉じる</button>
-    </div>
-  </div>
 
   <div class="card">
     <div class="level-row">
@@ -500,15 +396,6 @@
     </div>
     <div class="xpbar-outer"><div class="xpbar-inner" id="xpBar" style="width:0%"></div></div>
     <div class="xp-num" id="xpNext">次のレベルまで 100 XP</div>
-    <div class="score-streak-row">
-      <div class="mini-stat" id="estimatedScoreBox"></div>
-      <div class="mini-stat" id="streakBox"></div>
-    </div>
-  </div>
-
-  <div class="card" id="weaknessCard">
-    <div class="quest-eyebrow" style="margin-bottom:6px;">🎯 弱点分野トップ3</div>
-    <div id="weaknessList"></div>
   </div>
 
   <div class="card">
@@ -523,15 +410,6 @@
   <div class="card" id="questCard">
     <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;margin-bottom:6px;">
       <div class="quest-eyebrow" style="margin-bottom:0;" id="questEyebrow">⚔️ デイリー演習</div>
-      <div style="display:flex;gap:6px;align-items:center;">
-        <button class="scroll-btn" id="timeAttackBtn" onclick="toggleTimeAttack()">⏱ タイムアタックOFF</button>
-        <button class="scroll-btn" id="exitTrainingBtn" style="display:none;" onclick="exitTrainingMode()">デイリーに戻る</button>
-      </div>
-    </div>
-    <div class="cat-progress" id="catProgress"></div>
-    <div id="timerBarWrap" style="display:none;margin-bottom:10px;">
-      <div class="timer-bar-outer"><div class="timer-bar-inner" id="timerBarInner"></div></div>
-      <div style="text-align:right;font-size:10px;color:var(--mist);margin-top:2px;" id="timerLabel"></div>
     </div>
     <div id="questBody"></div>
     <div style="text-align:right;font-size:9px;color:var(--mist);margin-top:10px;">出典：ITパスポート試験 過去問題（IPA）</div>
@@ -540,49 +418,9 @@
   <div class="section-label">5周回チャレンジ（体験版：令和8年度）</div>
   <div class="card" id="scrollsCard"></div>
 
-  <div class="section-label">📈 学習の推移（直近14日・合格ライン対比）</div>
-  <div class="card">
-    <div id="dailyChartLegend" class="chart-legend"></div>
-    <canvas id="dailyChart"></canvas>
-  </div>
-
-  <div class="section-label">年度別 周回結果（周回完了時に記録）</div>
-  <div class="card">
-    <select id="chartYearSelect" style="margin-bottom:10px;width:100%;"></select>
-    <canvas id="chart"></canvas>
-  </div>
-
-  <div class="section-label">分野マップ</div>
-  <div class="card">
-    <div id="subjList"></div>
-  </div>
-
   <div class="section-label">⚠️ データ管理</div>
   <div class="card">
     <button class="btn-danger" onclick="openResetModal()">⚠️ すべてのデータを初期化</button>
-  </div>
-
-  <div class="section-label">💾 データのバックアップ</div>
-  <div class="card">
-    <div class="no-quest" style="margin-bottom:10px;">
-      進捗（レベル・周回記録・ミス問題・ブックマーク・称号など）は<b>この端末のブラウザにのみ</b>保存されます。
-    </div>
-    <div class="add-row">
-      <button class="small-btn" style="flex:1;" onclick="exportProgress()">⬇️ 進捗をエクスポート</button>
-      <label class="file-label" style="flex:1;text-align:center;">⬆️ 進捗を復元
-        <input type="file" id="importProgressInput" accept=".json,application/json" onchange="handleProgressImport(event)">
-      </label>
-    </div>
-  </div>
-
-  <div class="section-label">🔄 未克服のミス問題</div>
-  <div class="card">
-    <div id="mistakeList"></div>
-  </div>
-
-  <div class="section-label">⭐ ブックマーク（自信がない問題）</div>
-  <div class="card">
-    <div id="bookmarkList"></div>
   </div>
 
   <div class="section-label">🧙 AI家庭教師プロンプト集</div>
@@ -616,11 +454,12 @@
   </div>
 </div>
 
+<!-- 全データ初期化モーダル -->
 <div class="modal-overlay" id="resetModal">
   <div class="modal-box">
     <div class="modal-title">⚠️ 全データの初期化</div>
     <div class="modal-body">
-      学習進捗、レベル、周回記録を含むすべてのデータが消去されます。
+      学習進捗、レベル、回答履歴を含むすべてのデータが消去されます。初期化しますか？
     </div>
     <label class="modal-check">
       <input type="checkbox" id="resetConfirmCheck" onchange="updateResetButtonState()">
@@ -633,9 +472,10 @@
   </div>
 </div>
 
+<!-- 称号モーダル -->
 <div class="modal-overlay" id="achievementModal">
   <div class="modal-box">
-    <div class="modal-title">🏆 称号コレクション <span id="modalAchievementCount" style="color:var(--mist);font-weight:400;font-size:13px;"></span></div>
+    <div class="modal-title">🏆 称号コレクション</div>
     <div class="modal-body" style="max-height:60vh;overflow-y:auto;">
       <div id="achievementGrid" class="achievement-grid"></div>
     </div>
@@ -645,6 +485,7 @@
   </div>
 </div>
 
+<!-- 使い方ガイドモーダル -->
 <div class="modal-overlay" id="guideModal">
   <div class="modal-box">
     <div class="modal-title">❓ 使い方ガイド</div>
@@ -658,36 +499,23 @@
   </div>
 </div>
 
+<!-- CBT模試モード モーダル -->
 <div class="modal-overlay" id="cbtModal">
   <div class="modal-box cbt-box">
     <div class="cbt-header">
-      <span class="cbt-header-title">⏱ 本番CBT模試 ｜ <span id="cbtYearLabel"></span></span>
+      <span class="cbt-header-title">⏱ 本番CBT模試 ｜ <span id="cbtYearLabel">令和8年度（100問）</span></span>
       <span id="cbtTimerDisplay" class="cbt-timer">120:00</span>
       <button class="header-icon-btn" onclick="requestExitCbt()">&times;</button>
     </div>
     <div id="cbtExamView" class="cbt-exam-view">
-      <button class="cbt-nav-toggle" id="cbtNavToggleBtn" onclick="openCbtNavDrawer()">問一覧 ▾</button>
       <div id="cbtQuestionArea" class="cbt-question-scroll"></div>
     </div>
     <div class="cbt-footer-btns" id="cbtFooterBtns">
       <button class="btn btn-ghost" onclick="cbtPrev()">&larr; 前の問へ</button>
       <button class="btn btn-ghost" onclick="cbtNext()">次の問へ &rarr;</button>
-      <button class="btn btn-danger-solid" onclick="cbtRequestFinish()">試験終了（採点）</button>
+      <button class="btn btn-danger-solid" onclick="cbtFinish()">試験終了（採点）</button>
     </div>
     <div id="cbtResultsArea" class="cbt-results-view" style="display:none;"></div>
-  </div>
-</div>
-
-<div class="modal-overlay" id="cbtNavDrawer">
-  <div class="modal-box cbt-nav-drawer-box">
-    <div class="modal-title" style="margin-bottom:6px;">問題一覧</div>
-    <div class="cbt-nav-legend">
-      <span><i class="cbt-legend-dot unanswered"></i>未解答</span>
-      <span><i class="cbt-legend-dot answered"></i>解答済み</span>
-      <span><i class="cbt-legend-dot flagged"></i>見直し</span>
-    </div>
-    <div class="cbt-nav-grid-wrap"><div id="cbtNavGrid" class="cbt-nav-grid"></div></div>
-    <button class="btn btn-ghost" style="width:100%;margin-top:10px;" onclick="closeCbtNavDrawer()">閉じる</button>
   </div>
 </div>
 
@@ -815,9 +643,57 @@ function loadSoundPref(){
   updateSoundButtonLabel();
 }
 
-/* ---------- ガイドモーダル ---------- */
+/* ---------- ガイド ＆ 称号モーダル ---------- */
 function openGuideModal(){ document.getElementById("guideModal").classList.add("show"); }
 function closeGuideModal(){ document.getElementById("guideModal").classList.remove("show"); }
+
+function openAchievementModal(){
+  var grid = document.getElementById("achievementGrid");
+  if(grid){
+    grid.innerHTML = '<div class="badge unlocked"><div class="badge-icon">🐣</div><div class="badge-name">見習い冒険者</div></div>' +
+                     '<div class="badge ' + (state.level >= 5 ? 'unlocked' : '') + '"><div class="badge-icon">⚔️</div><div class="badge-name">歴戦の戦士</div></div>' +
+                     '<div class="badge ' + (state.level >= 10 ? 'unlocked' : '') + '"><div class="badge-icon">👑</div><div class="badge-name">合格マスター</div></div>';
+  }
+  document.getElementById("achievementModal").classList.add("show");
+}
+function closeAchievementModal(){ document.getElementById("achievementModal").classList.remove("show"); }
+
+/* ---------- データ管理・初期化モーダル制御 ---------- */
+function openResetModal(){
+  var modal = document.getElementById("resetModal");
+  var check = document.getElementById("resetConfirmCheck");
+  var btn = document.getElementById("resetExecuteBtn");
+  if(check) check.checked = false;
+  if(btn) btn.disabled = true;
+  if(modal) modal.classList.add("show");
+}
+function closeResetModal(){
+  var modal = document.getElementById("resetModal");
+  if(modal) modal.classList.remove("show");
+}
+function updateResetButtonState(){
+  var check = document.getElementById("resetConfirmCheck");
+  var btn = document.getElementById("resetExecuteBtn");
+  if(check && btn) btn.disabled = !check.checked;
+}
+function performReset(){
+  state = {
+    level: 1,
+    xp: 0,
+    streak: 0,
+    lastStudyDate: "",
+    mistakes: {},
+    bookmarks: {},
+    scrollRounds: {"令和8年度": 0},
+    dailyLogs: {},
+    achievements: {},
+    examDate: ""
+  };
+  saveState();
+  closeResetModal();
+  showToast("すべてのデータを初期化しました");
+  setTimeout(function(){ location.reload(); }, 600);
+}
 
 /* ---------- Storage Layer ---------- */
 var memoryStore = {};
@@ -847,20 +723,8 @@ function storageSet(key, value){
   memoryStore[key] = value;
 }
 
-/* ---------- 体験版 出題範囲定数 ---------- */
+/* ---------- 体験版 出題データ（令和8年度 1〜100問） ---------- */
 var STORE_KEY = "itpass_quest_trial_v1";
-var YEARS = ["令和8年度"];
-var YEARS_DESC = ["令和8年度"];
-var CATEGORIES = ["テクノロジ系","ストラテジ系","マネジメント系"];
-var TOTAL_GOAL_QUESTIONS_FLOOR = 100;
-
-var DEFAULT_SUBJECTS = [
-  {name:"テクノロジ系", category:"テクノロジ系"},
-  {name:"ストラテジ系", category:"ストラテジ系"},
-  {name:"マネジメント系", category:"マネジメント系"}
-];
-
-/* 令和8年度（1〜100問）問題データ */
 var DEFAULT_QUESTIONS = [
   {"year":"令和8年度","no":1,"subject":"ストラテジ系","text":"生成AIを用いた生成物の取扱いに関して、既存の著作物の著作権者から許諾を得ることが必要となる可能性のあるものだけを、全て挙げたものはどれか。\na 好みのアーティストの楽曲に似た音楽が得られるように生成AIを用いて楽曲を生成し、その楽曲をインターネット上にアップロードし、無料で公開した。\nb 好みのアーティストの楽曲に似た音楽が得られるように生成AIを用いて楽曲を生成し、その楽曲を自分のPC上に保管し、個人で視聴した。\nc 生成AIで音楽を生成したところ、偶然好みのアーティストの楽曲に似た音楽が生成できたので、自分のPC上に保管し、個人で視聴した。","choices":["a","a, b","a, b, c","b, c"],"correctIndex":0,"explanation":"著作権侵害が問題となるのは公開・利用による他者への影響がある場合。個人視聴（私的使用目的の複製）は著作権法上許容されるため、aのみが該当する。"},
   {"year":"令和8年度","no":2,"subject":"ストラテジ系","text":"BYODに関する記述として、適切なものはどれか。","choices":["企業の業務に、従業員が私物の携帯情報端末を許可を得た上で利用すること","企業の業務の定型的な作業をソフトウェアのロボットで効率化すること","企業の業務の流れを分析し、継続的に改善、最適化していくこと","企業の業務の流れを見直し、抜本的にデザインし直すこと"],"correctIndex":0,"explanation":"BYOD（Bring Your Own Device）は私物端末の業務利用のこと。イはRPA、エはBPRの説明。"},
@@ -1007,7 +871,6 @@ function loadState(){
     }catch(e){}
   }
 }
-
 function saveState(){
   storageSet(STORE_KEY, JSON.stringify(state));
 }
@@ -1150,7 +1013,6 @@ function renderLevel(){
 
   lbl.textContent = "Lv." + state.level;
   xpLbl.textContent = state.xp + " XP";
-  var nextLvXp = state.level * 100;
   var pct = Math.min(100, Math.floor((state.xp % 100) / 100 * 100));
   bar.style.width = pct + "%";
   nxt.textContent = "次のレベルまで " + (100 - (state.xp % 100)) + " XP";
@@ -1162,11 +1024,117 @@ function renderScrolls(){
   container.innerHTML = '<div class="scroll"><span class="scroll-year">令和8年度（100問演習）</span><button class="scroll-btn" onclick="startCbtModal()">CBT模試モード</button></div>';
 }
 
+/* ---------- CBT模試モード ロジック ---------- */
+var cbtQuestions = [];
+var cbtAnswers = {};
+var cbtIndex = 0;
+var cbtTimerSec = 120 * 60;
+var cbtInterval = null;
+
 function startCbtModal(){
   if(!checkTrialLimit()) return;
-  showToast("本番CBT模試を開始します（体験版）");
+  var modal = document.getElementById("cbtModal");
+  if(!modal) return;
+  cbtQuestions = DEFAULT_QUESTIONS.slice();
+  cbtAnswers = {};
+  cbtIndex = 0;
+  cbtTimerSec = 120 * 60;
+  
+  document.getElementById("cbtExamView").style.display = "flex";
+  document.getElementById("cbtFooterBtns").style.display = "flex";
+  document.getElementById("cbtResultsArea").style.display = "none";
+  modal.classList.add("show");
+  
+  renderCbtQuestion();
+  clearInterval(cbtInterval);
+  cbtInterval = setInterval(function(){
+    cbtTimerSec--;
+    var m = Math.floor(cbtTimerSec / 60);
+    var s = cbtTimerSec % 60;
+    var disp = document.getElementById("cbtTimerDisplay");
+    if(disp) disp.textContent = (m < 10 ? "0" : "") + m + ":" + (s < 10 ? "0" : "") + s;
+    if(cbtTimerSec <= 0){
+      clearInterval(cbtInterval);
+      cbtFinish();
+    }
+  }, 1000);
 }
 
+function requestExitCbt(){
+  if(confirm("CBT模試を中断して閉じますか？")){
+    clearInterval(cbtInterval);
+    document.getElementById("cbtModal").classList.remove("show");
+  }
+}
+
+function renderCbtQuestion(){
+  var container = document.getElementById("cbtQuestionArea");
+  if(!container || cbtQuestions.length === 0) return;
+  var q = cbtQuestions[cbtIndex];
+  var chosen = cbtAnswers[cbtIndex];
+  
+  var html = '<div class="quest-cat-badge">' + q.subject + '</div>' +
+             '<div class="quest-subject">問 ' + (cbtIndex + 1) + ' / ' + cbtQuestions.length + '</div>' +
+             '<div style="line-height:1.8;margin-bottom:14px;white-space:pre-wrap;">' + q.text + '</div>' +
+             '<div style="display:flex;flex-direction:column;gap:8px;">';
+             
+  for(var i = 0; i < q.choices.length; i++){
+    var isSel = (chosen === i);
+    html += '<button class="btn btn-ghost ' + (isSel ? 'cbt-choice-selected' : '') + '" style="text-align:left;padding:12px 14px;" onclick="selectCbtChoice(' + i + ')">' +
+            String.fromCharCode(65 + i) + '. ' + q.choices[i] + '</button>';
+  }
+  html += '</div>';
+  container.innerHTML = html;
+}
+
+function selectCbtChoice(choiceIdx){
+  cbtAnswers[cbtIndex] = choiceIdx;
+  renderCbtQuestion();
+}
+
+function cbtNext(){
+  if(cbtIndex < cbtQuestions.length - 1){
+    cbtIndex++;
+    renderCbtQuestion();
+  }else{
+    showToast("最後の問題です");
+  }
+}
+
+function cbtPrev(){
+  if(cbtIndex > 0){
+    cbtIndex--;
+    renderCbtQuestion();
+  }
+}
+
+function cbtFinish(){
+  clearInterval(cbtInterval);
+  var correctCount = 0;
+  for(var i = 0; i < cbtQuestions.length; i++){
+    if(cbtAnswers[i] === cbtQuestions[i].correctIndex){
+      correctCount++;
+    }
+  }
+  var score = Math.round((correctCount / cbtQuestions.length) * 1000);
+  var pass = (score >= 600);
+  
+  document.getElementById("cbtExamView").style.display = "none";
+  document.getElementById("cbtFooterBtns").style.display = "none";
+  var res = document.getElementById("cbtResultsArea");
+  res.style.display = "flex";
+  
+  res.innerHTML = '<div class="cbt-score-summary">' +
+                  '<div style="font-size:22px;font-weight:800;color:' + (pass ? 'var(--emerald)' : 'var(--ember)') + ';">' +
+                  (pass ? '🎉 合格判定ライン達成！' : '判定：不合格ライン') + '</div>' +
+                  '<div style="font-size:28px;font-weight:800;color:var(--gold);margin:8px 0;">' + score + ' <span style="font-size:16px;">/ 1000点</span></div>' +
+                  '<div style="font-size:12px;color:var(--mist);">正答数：' + correctCount + '問 / ' + cbtQuestions.length + '問</div>' +
+                  '<button class="btn btn-correct" style="margin-top:16px;width:100%;" onclick="requestExitCbt()">結果を閉じる</button>' +
+                  '</div>';
+  if(pass) playFanfareSound(); else playWrongSound();
+}
+
+/* ---------- 汎用ツール・設定 ---------- */
 function showToast(msg){
   var t = document.getElementById("toast");
   if(!t) return;
