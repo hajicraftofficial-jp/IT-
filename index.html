@@ -295,6 +295,7 @@
   .modal-overlay{
     display:none; position:fixed; inset:0; background:var(--overlay);
     align-items:center; justify-content:center; z-index:100; padding:20px;
+    overscroll-behavior: contain; /* ← これを追加！背面のスクロール連動を完全遮断します */
   }
   .modal-overlay.show{display:flex;}
   .modal-box{
@@ -321,6 +322,7 @@
   .cbt-question-scroll{
     flex:1; min-height:0; overflow-y:auto; font-size:var(--content-font-size); line-height:1.7;
     -webkit-overflow-scrolling:touch; padding-right:4px;
+    overscroll-behavior: contain; /* ← ここにも追加 */
   }
   .cbt-choice-selected{border-color:var(--gold) !important;background:rgba(232,184,75,.16) !important;color:var(--gold) !important;font-weight:700;}
 
